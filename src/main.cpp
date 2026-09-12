@@ -4,7 +4,8 @@
 //
 // 程序入口。
 //
-// 当前负责创建核心对象并启动系统。
+// main 只负责创建系统核心组件和启动生命周期。
+// 不包含交易逻辑。
 //
 // 启动流程：
 //
@@ -18,6 +19,9 @@
 //  |
 //  v
 // Engine
+//  |
+//  v
+// Event Loop
 //
 // 后续扩展：
 //
@@ -34,8 +38,6 @@
 //      +--> Risk
 //      +--> Execution
 //
-// main 不包含交易逻辑。
-// 它只负责程序生命周期管理。
 // ============================================================
 
 #include <iostream>
@@ -52,19 +54,21 @@ int main()
     std::cout << "CMETradingSystem starting..." << std::endl;
 
     // 创建事件总线。
-    // 所有模块未来通过它通信。
+    // 所有交易模块未来通过 EventBus 解耦通信。
     EventBus eventBus;
 
     // 创建事件分发器。
+    // Dispatcher 负责把事件发送给订阅模块。
     Dispatcher dispatcher(eventBus);
 
     // 创建交易引擎。
-    // 当前使用回测模式。
+    // 当前运行模式：BACKTEST。
     Engine engine(
         EngineMode::BACKTEST,
         dispatcher
     );
 
+    // 启动 Engine。
     engine.start();
 
     if (engine.running())
@@ -72,7 +76,11 @@ int main()
         std::cout << "Engine running" << std::endl;
     }
 
-    engine.stop();
+    // 进入交易系统主循环。
+    // 当前 tick() 还没有接入 MarketData。
+    // 后续接入 Databento MBO 后，
+    // 每一次 tick 会处理一个或多个市场事件。
+    engine.run();
 
     return 0;
 }
