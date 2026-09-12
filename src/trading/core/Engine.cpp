@@ -3,24 +3,14 @@
 
 namespace CMETradingSystem::Core {
 
-// ============================================================
-// Engine 构造函数
-// ============================================================
-//
-// 创建交易系统运行引擎。
-//
-// Engine 使用外部传入的 Dispatcher。
-// 不让 Engine 自己创建底层模块。
-//
-// 这样：
-// - 回测可以注入回放模块
-// - 模拟交易可以注入模拟执行模块
-// - 实盘可以注入真实连接模块
-//
-// ============================================================
-Engine::Engine(EngineMode mode, Dispatcher& dispatcher)
+Engine::Engine(
+    EngineMode mode,
+    Dispatcher& dispatcher,
+    EventQueue& event_queue
+)
     : mode_(mode),
-      dispatcher_(&dispatcher)
+      dispatcher_(&dispatcher),
+      event_queue_(&event_queue)
 {
 }
 
@@ -37,27 +27,6 @@ void Engine::stop()
 }
 
 
-// ============================================================
-// Engine::run
-//
-// 交易系统主循环。
-//
-// 当前版本只建立循环框架。
-//
-// 后续：
-//
-// Market Data
-//      |
-//      v
-//    Event
-//      |
-//      v
-// Dispatcher
-//      |
-//      v
-// OrderBook / Strategy / Risk
-//
-// ============================================================
 void Engine::run()
 {
     while (running())
@@ -72,18 +41,35 @@ void Engine::run()
 //
 // 单次系统推进。
 //
-// 当前为空实现。
-// 原因：
-// 目前还没有接入 MarketData Queue。
+// 流程：
 //
-// 后续负责：
-// - 获取行情事件
-// - 更新时间
-// - 发布 Event
-// - 调用 Dispatcher
+// EventQueue
+//      |
+//      v
+// Engine.tick()
+//      |
+//      v
+// Dispatcher
+//      |
+//      v
+// EventBus
+//
+// 当前只处理已经进入队列的 Event。
+// 不负责产生行情数据。
 // ============================================================
 void Engine::tick()
 {
+    if (dispatcher_ == nullptr || event_queue_ == nullptr)
+    {
+        return;
+    }
+
+    Event event;
+
+    if (event_queue_->pop(event))
+    {
+        dispatcher_->dispatch(event);
+    }
 }
 
 
