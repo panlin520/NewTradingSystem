@@ -9,34 +9,19 @@
 //
 // 启动流程：
 //
-// main
-//  |
-//  v
-// EventBus
-//  |
-//  v
-// Dispatcher
-//  |
-//  v
-// Engine
-//  |
-//  v
-// Event Loop
-//
-// 后续扩展：
-//
 // MarketData
 //      |
 //      v
+// EventQueue
+//      |
+//      v
 // EventBus
 //      |
 //      v
 // Dispatcher
 //      |
-//      +--> OrderBook
-//      +--> Strategy
-//      +--> Risk
-//      +--> Execution
+//      v
+// Engine
 //
 // ============================================================
 
@@ -45,6 +30,7 @@
 #include "trading/core/Dispatcher.hpp"
 #include "trading/core/Engine.hpp"
 #include "trading/core/EventBus.hpp"
+#include "trading/core/EventQueue.hpp"
 
 using namespace CMETradingSystem::Core;
 
@@ -57,6 +43,11 @@ int main()
     // 所有交易模块未来通过 EventBus 解耦通信。
     EventBus eventBus;
 
+    // 创建事件队列。
+    // MarketData 产生的事件首先进入队列，
+    // 然后由 Engine.tick() 逐步消费。
+    EventQueue eventQueue;
+
     // 创建事件分发器。
     // Dispatcher 负责把事件发送给订阅模块。
     Dispatcher dispatcher(eventBus);
@@ -65,7 +56,8 @@ int main()
     // 当前运行模式：BACKTEST。
     Engine engine(
         EngineMode::BACKTEST,
-        dispatcher
+        dispatcher,
+        eventQueue
     );
 
     // 启动 Engine。
@@ -77,9 +69,9 @@ int main()
     }
 
     // 进入交易系统主循环。
-    // 当前 tick() 还没有接入 MarketData。
+    // 当前 tick() 已连接 EventQueue。
     // 后续接入 Databento MBO 后，
-    // 每一次 tick 会处理一个或多个市场事件。
+    // MarketData 将持续向 EventQueue 输入事件。
     engine.run();
 
     return 0;
