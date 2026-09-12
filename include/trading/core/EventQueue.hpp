@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <queue>
 
 #include "trading/core/Event.hpp"
@@ -10,63 +11,46 @@ namespace CMETradingSystem::Core {
 // EventQueue
 // ============================================================
 //
-// EventQueue 是交易系统内部的事件等待队列。
+// 多态事件队列。
 //
-// 小白理解：
+// 为什么使用 unique_ptr<Event>：
 //
-// 市场数据不会直接进入 Engine，而是先排队。
+// Event 是所有事件的基类。
+// 例如：
 //
-// 数据流：
+// Event
+//   |
+//   +-- MarketDataEvent
+//   +-- OrderEvent
+//   +-- TimerEvent
 //
-// MarketData
-//      |
-//      v
-// EventQueue
-//      |
-//      v
-// Engine.tick()
-//      |
-//      v
-// Dispatcher
-//      |
-//      v
-// EventBus
+// 如果直接保存 Event，会发生对象切片，
+// 导致派生事件中的数据丢失。
 //
-// 负责：
-// - 保存等待处理的 Event
-// - 保证先进先出(FIFO)
-// - 提供事件写入和读取接口
-//
-// 不负责：
-// - 行情解析
-// - OrderBook重建
-// - 策略计算
-// - 风控
+// 使用 unique_ptr 可以保留完整派生类型。
 // ============================================================
 
 class EventQueue
 {
 public:
 
-    // 添加一个事件到队列尾部。
-    void push(const Event& event);
+    // 添加事件。
+    void push(std::unique_ptr<Event> event);
 
-    // 获取并移除队列最前面的事件。
-    // 返回：
-    // true  = 成功取出事件
-    // false = 队列为空
-    bool pop(Event& event);
+    // 获取队首事件。
+    // 返回 nullptr 表示当前没有事件。
+    std::unique_ptr<Event> pop();
 
-    // 判断当前是否为空。
+    // 判断队列是否为空。
     bool empty() const;
 
-    // 返回当前事件数量。
+    // 获取当前事件数量。
     std::size_t size() const;
 
 private:
 
-    // FIFO事件容器。
-    std::queue<Event> events_;
+    // FIFO 多态事件容器。
+    std::queue<std::unique_ptr<Event>> events_;
 };
 
 }
