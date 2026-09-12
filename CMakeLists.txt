@@ -13,14 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # ============================================================
-# Include Directory
-# ============================================================
-target_include_directories(NewTradingSystemCore
-    PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
-)
-
-# ============================================================
 # Source Discovery
 # ============================================================
 file(GLOB_RECURSE PROJECT_SOURCES
@@ -37,6 +29,11 @@ file(GLOB_RECURSE PROJECT_HEADERS
 add_library(NewTradingSystemCore
     ${PROJECT_SOURCES}
     ${PROJECT_HEADERS}
+)
+
+target_include_directories(NewTradingSystemCore
+    PUBLIC
+    ${PROJECT_SOURCE_DIR}/include
 )
 
 # ============================================================
