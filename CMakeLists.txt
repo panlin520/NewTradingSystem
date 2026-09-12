@@ -15,23 +15,24 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 # ============================================================
 # Include Directory
 # ============================================================
-include_directories(
+target_include_directories(NewTradingSystemCore
+    PUBLIC
     ${PROJECT_SOURCE_DIR}/include
 )
 
 # ============================================================
-# Core Source Files
+# Source Discovery
 # ============================================================
 file(GLOB_RECURSE PROJECT_SOURCES
-    ${PROJECT_SOURCE_DIR}/src/*.cpp
+    ${PROJECT_SOURCE_DIR}/src/trading/*.cpp
 )
 
 file(GLOB_RECURSE PROJECT_HEADERS
-    ${PROJECT_SOURCE_DIR}/include/*.hpp
+    ${PROJECT_SOURCE_DIR}/include/trading/*.hpp
 )
 
 # ============================================================
-# Trading Engine Library
+# Trading Core Library
 # ============================================================
 add_library(NewTradingSystemCore
     ${PROJECT_SOURCES}
