@@ -2,22 +2,25 @@
 
 namespace CMETradingSystem::Core {
 
-void EventQueue::push(const Event& event)
+void EventQueue::push(std::unique_ptr<Event> event)
 {
-    events_.push(event);
+    if (event)
+    {
+        events_.push(std::move(event));
+    }
 }
 
-bool EventQueue::pop(Event& event)
+std::unique_ptr<Event> EventQueue::pop()
 {
     if (events_.empty())
     {
-        return false;
+        return nullptr;
     }
 
-    event = events_.front();
+    auto event = std::move(events_.front());
     events_.pop();
 
-    return true;
+    return event;
 }
 
 bool EventQueue::empty() const
