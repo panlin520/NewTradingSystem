@@ -14,18 +14,15 @@ Engine::Engine(
 {
 }
 
-
 void Engine::start()
 {
     state_.running = true;
 }
 
-
 void Engine::stop()
 {
     state_.running = false;
 }
-
 
 void Engine::run()
 {
@@ -35,28 +32,6 @@ void Engine::run()
     }
 }
 
-
-// ============================================================
-// Engine::tick
-//
-// 单次系统推进。
-//
-// 流程：
-//
-// EventQueue
-//      |
-//      v
-// Engine.tick()
-//      |
-//      v
-// Dispatcher
-//      |
-//      v
-// EventBus
-//
-// 当前只处理已经进入队列的 Event。
-// 不负责产生行情数据。
-// ============================================================
 void Engine::tick()
 {
     if (dispatcher_ == nullptr || event_queue_ == nullptr)
@@ -64,20 +39,18 @@ void Engine::tick()
         return;
     }
 
-    Event event;
+    auto event = event_queue_->pop();
 
-    if (event_queue_->pop(event))
+    if (event)
     {
-        dispatcher_->dispatch(event);
+        dispatcher_->dispatch(*event);
     }
 }
-
 
 bool Engine::running() const
 {
     return state_.running;
 }
-
 
 EngineMode Engine::mode() const
 {
