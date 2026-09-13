@@ -52,3 +52,11 @@ __pycache__/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Databento market data files (local only)
+*.dbn
+*.dbn.zst
+
+# Local market data folders
+/data/
+/00_data/
