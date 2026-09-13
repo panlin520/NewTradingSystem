@@ -3,15 +3,35 @@
   <ItemGroup>
     <Filter Include="src"><UniqueIdentifier>{11111111-1111-1111-1111-111111111111}</UniqueIdentifier></Filter>
     <Filter Include="include"><UniqueIdentifier>{22222222-2222-2222-2222-222222222222}</UniqueIdentifier></Filter>
+    <Filter Include="tests"><UniqueIdentifier>{33333333-3333-3333-3333-333333333333}</UniqueIdentifier></Filter>
     <Filter Include="src\core"><UniqueIdentifier>{11111111-1111-1111-1111-111111111112}</UniqueIdentifier><Extensions>cpp;c;cc;cxx</Extensions></Filter>
+    <Filter Include="src\marketdata"><UniqueIdentifier>{11111111-1111-1111-1111-111111111113}</UniqueIdentifier><Extensions>cpp;c;cc;cxx</Extensions></Filter>
     <Filter Include="include\core"><UniqueIdentifier>{22222222-2222-2222-2222-222222222221}</UniqueIdentifier><Extensions>h;hpp;hxx</Extensions></Filter>
+    <Filter Include="include\marketdata"><UniqueIdentifier>{22222222-2222-2222-2222-222222222222}</UniqueIdentifier><Extensions>h;hpp;hxx</Extensions></Filter>
+    <Filter Include="tests\core"><UniqueIdentifier>{33333333-3333-3333-3333-333333333334}</UniqueIdentifier></Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\trading\core\EventQueue.cpp">
       <Filter>src\core</Filter>
     </ClCompile>
+    <ClCompile Include="src\trading\marketdata\MarketDataEvent.cpp">
+      <Filter>src\marketdata</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
     <ClInclude Include="include\trading\core\EventQueue.hpp">
       <Filter>include\core</Filter>
     </ClInclude>
+    <ClInclude Include="include\trading\marketdata\MarketDataEvent.hpp">
+      <Filter>include\marketdata</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tests\CMakeLists.txt">
+      <Filter>tests</Filter>
+    </None>
+    <None Include="tests\core\EventPipelineTest.cpp">
+      <Filter>tests\core</Filter>
+    </None>
   </ItemGroup>
 </Project>
