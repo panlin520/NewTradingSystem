@@ -25,6 +25,16 @@ target_include_directories(NewTradingSystemCore
     ${PROJECT_SOURCE_DIR}/include
 )
 
+# GoogleTest dependency for unit tests
+include(FetchContent)
+
+FetchContent_Declare(
+    googletest
+    URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
+)
+
+FetchContent_MakeAvailable(googletest)
+
 enable_testing()
 
 add_subdirectory(tests)
