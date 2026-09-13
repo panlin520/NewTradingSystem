@@ -5,6 +5,7 @@ add_executable(EventPipelineTest
 target_link_libraries(EventPipelineTest
     PRIVATE
     NewTradingSystemCore
+    GTest::gtest_main
 )
 
 target_include_directories(EventPipelineTest
@@ -12,10 +13,9 @@ target_include_directories(EventPipelineTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
-add_test(
-    NAME EventPipelineTest
-    COMMAND EventPipelineTest
-)
+include(GoogleTest)
+gtest_discover_tests(EventPipelineTest)
+
 
 add_executable(DBNReaderTest
     marketdata/DBNReaderTest.cpp
@@ -24,6 +24,7 @@ add_executable(DBNReaderTest
 target_link_libraries(DBNReaderTest
     PRIVATE
     NewTradingSystemCore
+    GTest::gtest_main
 )
 
 target_include_directories(DBNReaderTest
@@ -31,7 +32,4 @@ target_include_directories(DBNReaderTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
-add_test(
-    NAME DBNReaderTest
-    COMMAND DBNReaderTest
-)
+gtest_discover_tests(DBNReaderTest)
