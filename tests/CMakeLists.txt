@@ -32,4 +32,7 @@ target_include_directories(DBNReaderTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
-gtest_discover_tests(DBNReaderTest)
+add_test(
+    NAME DBNReaderTest
+    COMMAND DBNReaderTest
+)
