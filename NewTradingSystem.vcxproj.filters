@@ -7,7 +7,7 @@
     <Filter Include="src\core"><UniqueIdentifier>{11111111-1111-1111-1111-111111111112}</UniqueIdentifier><Extensions>cpp;c;cc;cxx</Extensions></Filter>
     <Filter Include="src\marketdata"><UniqueIdentifier>{11111111-1111-1111-1111-111111111113}</UniqueIdentifier><Extensions>cpp;c;cc;cxx</Extensions></Filter>
     <Filter Include="include\core"><UniqueIdentifier>{22222222-2222-2222-2222-222222222221}</UniqueIdentifier><Extensions>h;hpp;hxx</Extensions></Filter>
-    <Filter Include="include\marketdata"><UniqueIdentifier>{22222222-2222-2222-2222-222222222222}</UniqueIdentifier><Extensions>h;hpp;hxx</Extensions></Filter>
+    <Filter Include="include\marketdata"><UniqueIdentifier>{22222222-2222-2222-2222-222222222223}</UniqueIdentifier><Extensions>h;hpp;hxx</Extensions></Filter>
     <Filter Include="tests\core"><UniqueIdentifier>{33333333-3333-3333-3333-333333333334}</UniqueIdentifier></Filter>
   </ItemGroup>
   <ItemGroup>
