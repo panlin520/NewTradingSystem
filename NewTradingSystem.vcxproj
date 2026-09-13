@@ -28,7 +28,15 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ItemGroup>
     <ClInclude Include="include\trading\core\EventQueue.hpp" />
+    <ClInclude Include="include\trading\marketdata\MarketDataEvent.hpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ClCompile Include="src\trading\core\EventQueue.cpp" />
+    <ClCompile Include="src\trading\marketdata\MarketDataEvent.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="tests\CMakeLists.txt" />
+    <None Include="tests\core\EventPipelineTest.cpp" />
   </ItemGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup>
