@@ -1,5 +1,7 @@
 #include "trading/marketdata/HistoricalFeed.hpp"
 
+#include <utility>
+
 namespace CMETradingSystem::MarketData {
 
 HistoricalFeed::HistoricalFeed(std::string file_path)
