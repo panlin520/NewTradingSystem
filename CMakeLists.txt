@@ -16,6 +16,11 @@ file(GLOB_RECURSE CORE_SOURCES
     ${PROJECT_SOURCE_DIR}/src/*.cpp
 )
 
+# Remove application entry point from library
+list(REMOVE_ITEM CORE_SOURCES
+    ${PROJECT_SOURCE_DIR}/src/main.cpp
+)
+
 add_library(NewTradingSystemCore
     ${CORE_SOURCES}
 )
