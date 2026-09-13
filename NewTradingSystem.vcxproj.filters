@@ -15,12 +15,14 @@
     <ClCompile Include="src\trading\marketdata\MarketDataEvent.cpp"><Filter>src\marketdata</Filter></ClCompile>
     <ClCompile Include="src\trading\marketdata\MarketDataFeed.cpp"><Filter>src\marketdata</Filter></ClCompile>
     <ClCompile Include="src\trading\marketdata\HistoricalFeed.cpp"><Filter>src\marketdata</Filter></ClCompile>
+    <ClCompile Include="src\trading\marketdata\FeedAdapter.cpp"><Filter>src\marketdata</Filter></ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\trading\core\EventQueue.hpp"><Filter>include\core</Filter></ClInclude>
     <ClInclude Include="include\trading\marketdata\MarketDataEvent.hpp"><Filter>include\marketdata</Filter></ClInclude>
     <ClInclude Include="include\trading\marketdata\MarketDataFeed.hpp"><Filter>include\marketdata</Filter></ClInclude>
     <ClInclude Include="include\trading\marketdata\HistoricalFeed.hpp"><Filter>include\marketdata</Filter></ClInclude>
+    <ClInclude Include="include\trading\marketdata\FeedAdapter.hpp"><Filter>include\marketdata</Filter></ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="tests\CMakeLists.txt"><Filter>tests</Filter></None>
