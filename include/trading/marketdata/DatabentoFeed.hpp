@@ -1,6 +1,6 @@
 #pragma once
 
-#include "trading/marketdata/HistoricalFeed.hpp"
+#include "trading/marketdata/MarketDataFeed.hpp"
 
 #include <string>
 
@@ -25,7 +25,7 @@ namespace CMETradingSystem::MarketData {
 // - Strategy
 // - Execution
 // ============================================================
-class DatabentoFeed final : public HistoricalFeed
+class DatabentoFeed final : public MarketDataFeed
 {
 public:
 
@@ -33,6 +33,11 @@ public:
 
     ~DatabentoFeed() noexcept override;
 
+    [[nodiscard]] FeedStatus next(MarketDataEvent& event) override;
+
+private:
+
+    std::string file_path_;
 };
 
 }
