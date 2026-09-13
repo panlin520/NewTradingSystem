@@ -32,6 +32,8 @@
     <ClInclude Include="include\trading\marketdata\MarketDataFeed.hpp" />
     <ClInclude Include="include\trading\marketdata\HistoricalFeed.hpp" />
     <ClInclude Include="include\trading\marketdata\FeedAdapter.hpp" />
+    <ClInclude Include="include\trading\marketdata\DatabentoFeed.hpp" />
+    <ClInclude Include="include\trading\marketdata\databento\DBNReader.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\trading\core\EventQueue.cpp" />
@@ -39,19 +41,8 @@
     <ClCompile Include="src\trading\marketdata\MarketDataFeed.cpp" />
     <ClCompile Include="src\trading\marketdata\HistoricalFeed.cpp" />
     <ClCompile Include="src\trading\marketdata\FeedAdapter.cpp" />
+    <ClCompile Include="src\trading\marketdata\DatabentoFeed.cpp" />
+    <ClCompile Include="src\trading\marketdata\databento\DBNReader.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="tests\CMakeLists.txt" />
-    <None Include="tests\core\EventPipelineTest.cpp" />
-  </ItemGroup>
-  <PropertyGroup Label="UserMacros" />
-  <ItemDefinitionGroup>
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp20</LanguageStandard>
-    </ClCompile>
-  </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
