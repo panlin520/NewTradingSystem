@@ -31,12 +31,14 @@
     <ClInclude Include="include\trading\marketdata\MarketDataEvent.hpp" />
     <ClInclude Include="include\trading\marketdata\MarketDataFeed.hpp" />
     <ClInclude Include="include\trading\marketdata\HistoricalFeed.hpp" />
+    <ClInclude Include="include\trading\marketdata\FeedAdapter.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\trading\core\EventQueue.cpp" />
     <ClCompile Include="src\trading\marketdata\MarketDataEvent.cpp" />
     <ClCompile Include="src\trading\marketdata\MarketDataFeed.cpp" />
     <ClCompile Include="src\trading\marketdata\HistoricalFeed.cpp" />
+    <ClCompile Include="src\trading\marketdata\FeedAdapter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="tests\CMakeLists.txt" />
