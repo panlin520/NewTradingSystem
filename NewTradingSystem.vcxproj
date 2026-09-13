@@ -29,10 +29,12 @@
   <ItemGroup>
     <ClInclude Include="include\trading\core\EventQueue.hpp" />
     <ClInclude Include="include\trading\marketdata\MarketDataEvent.hpp" />
+    <ClInclude Include="include\trading\marketdata\MarketDataFeed.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\trading\core\EventQueue.cpp" />
     <ClCompile Include="src\trading\marketdata\MarketDataEvent.cpp" />
+    <ClCompile Include="src\trading\marketdata\MarketDataFeed.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="tests\CMakeLists.txt" />
