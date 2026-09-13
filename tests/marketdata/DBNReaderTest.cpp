@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include <iostream>
+#include <string>
 
 #include "trading/marketdata/databento/DBNReader.hpp"
 
@@ -13,9 +14,10 @@ TEST(DBNReaderTest, OpenClose)
 
     std::cout << "[1/4] Creating DBNReader" << std::endl;
 
-    DBNReader reader(
-        "00_data/ESU6_2026-06-15_MBO.dbn.zst"
-    );
+    const std::string path =
+        "data/ESU6_2026-06-15_MBO.dbn.zst";
+
+    DBNReader reader(path);
 
     std::cout << "[2/4] Opening DBN file" << std::endl;
 
