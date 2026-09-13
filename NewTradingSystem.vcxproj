@@ -18,13 +18,6 @@
     <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v145</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ItemGroup>
     <ClInclude Include="include\trading\core\EventQueue.hpp" />
@@ -34,6 +27,7 @@
     <ClInclude Include="include\trading\marketdata\FeedAdapter.hpp" />
     <ClInclude Include="include\trading\marketdata\DatabentoFeed.hpp" />
     <ClInclude Include="include\trading\marketdata\databento\DBNReader.hpp" />
+    <ClInclude Include="include\trading\marketdata\databento\DatabentoDecoder.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\trading\core\EventQueue.cpp" />
@@ -43,6 +37,7 @@
     <ClCompile Include="src\trading\marketdata\FeedAdapter.cpp" />
     <ClCompile Include="src\trading\marketdata\DatabentoFeed.cpp" />
     <ClCompile Include="src\trading\marketdata\databento\DBNReader.cpp" />
+    <ClCompile Include="src\trading\marketdata\databento\DatabentoDecoder.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>
