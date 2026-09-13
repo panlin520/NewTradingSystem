@@ -5,24 +5,30 @@
 namespace CMETradingSystem::MarketData {
 
 HistoricalFeed::HistoricalFeed(std::string file_path)
-    : file_path_(std::move(file_path))
+    : file_path_(std::move(file_path)),
+      file_(file_path_)
 {
 }
 
-
 HistoricalFeed::~HistoricalFeed() noexcept = default;
-
 
 FeedStatus HistoricalFeed::next(MarketDataEvent& event)
 {
-    // 当前阶段只建立统一 Feed 生命周期。
-    // 具体历史文件解析将在 Databento MBO Parser 阶段实现。
-    (void)event;
-
     if (end_of_stream_)
     {
         return FeedStatus::END_OF_STREAM;
     }
+
+    if (!file_.is_open())
+    {
+        return FeedStatus::ERROR;
+    }
+
+    // 当前阶段只验证历史文件生命周期。
+    // Databento MBO 解析将在专用 Parser 阶段接入。
+    (void)event;
+
+    end_of_stream_ = true;
 
     return FeedStatus::END_OF_STREAM;
 }
