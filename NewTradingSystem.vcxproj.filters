@@ -11,33 +11,19 @@
     <Filter Include="tests\core"><UniqueIdentifier>{33333333-3333-3333-3333-333333333334}</UniqueIdentifier></Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\trading\core\EventQueue.cpp">
-      <Filter>src\core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\trading\marketdata\MarketDataEvent.cpp">
-      <Filter>src\marketdata</Filter>
-    </ClCompile>
-    <ClCompile Include="src\trading\marketdata\MarketDataFeed.cpp">
-      <Filter>src\marketdata</Filter>
-    </ClCompile>
+    <ClCompile Include="src\trading\core\EventQueue.cpp"><Filter>src\core</Filter></ClCompile>
+    <ClCompile Include="src\trading\marketdata\MarketDataEvent.cpp"><Filter>src\marketdata</Filter></ClCompile>
+    <ClCompile Include="src\trading\marketdata\MarketDataFeed.cpp"><Filter>src\marketdata</Filter></ClCompile>
+    <ClCompile Include="src\trading\marketdata\HistoricalFeed.cpp"><Filter>src\marketdata</Filter></ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\trading\core\EventQueue.hpp">
-      <Filter>include\core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\trading\marketdata\MarketDataEvent.hpp">
-      <Filter>include\marketdata</Filter>
-    </ClInclude>
-    <ClInclude Include="include\trading\marketdata\MarketDataFeed.hpp">
-      <Filter>include\marketdata</Filter>
-    </ClInclude>
+    <ClInclude Include="include\trading\core\EventQueue.hpp"><Filter>include\core</Filter></ClInclude>
+    <ClInclude Include="include\trading\marketdata\MarketDataEvent.hpp"><Filter>include\marketdata</Filter></ClInclude>
+    <ClInclude Include="include\trading\marketdata\MarketDataFeed.hpp"><Filter>include\marketdata</Filter></ClInclude>
+    <ClInclude Include="include\trading\marketdata\HistoricalFeed.hpp"><Filter>include\marketdata</Filter></ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="tests\CMakeLists.txt">
-      <Filter>tests</Filter>
-    </None>
-    <None Include="tests\core\EventPipelineTest.cpp">
-      <Filter>tests\core</Filter>
-    </None>
+    <None Include="tests\CMakeLists.txt"><Filter>tests</Filter></None>
+    <None Include="tests\core\EventPipelineTest.cpp"><Filter>tests\core</Filter></None>
   </ItemGroup>
 </Project>
