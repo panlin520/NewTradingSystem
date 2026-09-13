@@ -13,9 +13,9 @@ namespace CMETradingSystem::MarketData {
 //
 // CME MDP 3.0 MBO Level 3 market data event.
 //
-// Every order book change from Databento MBO will eventually be
-// converted into this event type before entering the Core event
-// pipeline.
+// This is the unified internal market data event format.
+// Databento MBO records are converted into this structure before
+// entering the Core event pipeline.
 //
 // Flow:
 //
@@ -44,6 +44,24 @@ struct MarketDataEvent : public Core::Event
 
     // Receive timestamp (nanoseconds).
     uint64_t ts_recv{0};
+
+    // Databento record type.
+    uint8_t rtype{0};
+
+    // Data publisher identifier.
+    uint16_t publisher_id{0};
+
+    // Instrument identifier.
+    uint32_t instrument_id{0};
+
+    // Channel identifier.
+    uint16_t channel_id{0};
+
+    // Record flags.
+    uint8_t flags{0};
+
+    // Time delta information from source feed.
+    int32_t ts_in_delta{0};
 
     // Databento MBO action:
     // A = Add
