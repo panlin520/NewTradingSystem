@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace CMETradingSystem::MarketData::Databento {
 
@@ -21,9 +22,9 @@ struct DBNHeader
 // Databento DBN / DBN.ZST 文件读取器。
 //
 // 当前阶段：
-// - 打开 Databento 文件
-// - 验证文件存在
-// - 准备 DBN Header 读取接口
+// - 打开 Databento 压缩文件
+// - zstd 解压
+// - 准备 DBN Header 读取
 //
 // 不负责：
 // - MarketDataEvent 创建
@@ -55,6 +56,8 @@ private:
     bool opened_{false};
 
     DBNHeader header_{};
+
+    std::vector<uint8_t> decompressed_data_;
 };
 
 }
