@@ -1,5 +1,6 @@
 #include "trading/marketdata/databento/DBNReader.hpp"
 
+#include <filesystem>
 #include <utility>
 
 namespace CMETradingSystem::MarketData::Databento {
@@ -15,8 +16,20 @@ DBNReader::~DBNReader() noexcept = default;
 
 bool DBNReader::open()
 {
-    // 当前阶段只建立 DBN Reader 生命周期。
-    // 实际 DBN.ZST 解码将在下一阶段接入 Databento SDK 或解析层。
+    // ============================================================
+    // Stage 1:
+    // Validate DBN file existence.
+    //
+    // This stage does not decode DBN/ZSTD records yet.
+    // It only guarantees that the configured market data file exists.
+    // ============================================================
+
+    if (!std::filesystem::exists(file_path_))
+    {
+        opened_ = false;
+        return false;
+    }
+
     opened_ = true;
     return true;
 }
