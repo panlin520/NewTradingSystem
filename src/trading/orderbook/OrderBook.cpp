@@ -38,6 +38,21 @@ bool OrderBook::cancel_order(uint64_t order_id)
     if (it == orders_.end())
         return false;
 
+    auto& order = it->second;
+
+    if (order.side == OrderSide::BUY)
+    {
+        auto level = bids_.find(order.price);
+        if (level != bids_.end())
+            level->second.remove(order_id);
+    }
+    else if (order.side == OrderSide::SELL)
+    {
+        auto level = asks_.find(order.price);
+        if (level != asks_.end())
+            level->second.remove(order_id);
+    }
+
     orders_.erase(it);
     return true;
 }
@@ -48,7 +63,26 @@ bool OrderBook::modify_order(uint64_t order_id, uint32_t new_size)
     if (it == orders_.end())
         return false;
 
-    it->second.size = new_size;
+    auto& order = it->second;
+
+    if (order.side == OrderSide::BUY)
+    {
+        auto level = bids_.find(order.price);
+        if (level == bids_.end())
+            return false;
+
+        level->second.modify(order_id, new_size);
+    }
+    else if (order.side == OrderSide::SELL)
+    {
+        auto level = asks_.find(order.price);
+        if (level == asks_.end())
+            return false;
+
+        level->second.modify(order_id, new_size);
+    }
+
+    order.size = new_size;
     return true;
 }
 
