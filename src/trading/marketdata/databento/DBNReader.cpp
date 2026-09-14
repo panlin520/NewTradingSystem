@@ -1,5 +1,6 @@
 #include "trading/marketdata/databento/DBNReader.hpp"
 
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <utility>
@@ -13,9 +14,7 @@ DBNReader::DBNReader(std::string file_path)
 {
 }
 
-
 DBNReader::~DBNReader() noexcept = default;
-
 
 bool DBNReader::open()
 {
@@ -25,10 +24,7 @@ bool DBNReader::open()
         return false;
     }
 
-    std::ifstream file(
-        file_path_,
-        std::ios::binary | std::ios::ate
-    );
+    std::ifstream file(file_path_, std::ios::binary | std::ios::ate);
 
     if (!file)
     {
@@ -66,9 +62,7 @@ bool DBNReader::open()
         return false;
     }
 
-    decompressed_data_.resize(
-        static_cast<size_t>(decompressed_size)
-    );
+    decompressed_data_.resize(static_cast<size_t>(decompressed_size));
 
     const size_t result = ZSTD_decompress(
         decompressed_data_.data(),
@@ -84,10 +78,8 @@ bool DBNReader::open()
     }
 
     opened_ = true;
-
     return true;
 }
-
 
 bool DBNReader::read_header()
 {
@@ -105,12 +97,10 @@ bool DBNReader::read_header()
     return true;
 }
 
-
 bool DBNReader::is_open() const noexcept
 {
     return opened_;
 }
-
 
 const DBNHeader& DBNReader::header() const noexcept
 {
