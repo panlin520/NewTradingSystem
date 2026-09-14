@@ -37,6 +37,12 @@ target_include_directories(DBNReaderTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
+target_compile_definitions(
+    DBNReaderTest
+    PRIVATE
+    PROJECT_ROOT="${PROJECT_SOURCE_DIR}"
+)
+
 # Enable GoogleTest CMake integration for DBNReaderTest
 enable_testing()
 include(GoogleTest)
