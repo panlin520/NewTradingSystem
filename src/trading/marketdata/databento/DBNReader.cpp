@@ -16,14 +16,6 @@ DBNReader::~DBNReader() noexcept = default;
 
 bool DBNReader::open()
 {
-    // ============================================================
-    // Stage 1:
-    // Validate DBN file existence.
-    //
-    // This stage does not decode DBN/ZSTD records yet.
-    // It only guarantees that the configured market data file exists.
-    // ============================================================
-
     if (!std::filesystem::exists(file_path_))
     {
         opened_ = false;
@@ -35,9 +27,33 @@ bool DBNReader::open()
 }
 
 
+bool DBNReader::read_header()
+{
+    // ============================================================
+    // Stage 2 placeholder.
+    //
+    // Real DBN binary header decoding will be implemented here.
+    // Current function only validates that the reader is open.
+    // ============================================================
+
+    if (!opened_)
+    {
+        return false;
+    }
+
+    return true;
+}
+
+
 bool DBNReader::is_open() const noexcept
 {
     return opened_;
+}
+
+
+const DBNHeader& DBNReader::header() const noexcept
+{
+    return header_;
 }
 
 }
