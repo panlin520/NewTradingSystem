@@ -1,6 +1,5 @@
 #include "trading/marketdata/databento/DBNReader.hpp"
 
-#include <array>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -69,29 +68,29 @@ bool DBNReader::open()
 
     if (ZSTD_isError(result))
     {
-        std::cout
-            << "[DBNReader] init zstd stream failed: "
-            << ZSTD_getErrorName(result)
-            << std::endl;
-
+        std::cout << "[DBNReader] init zstd stream failed: "
+                  << ZSTD_getErrorName(result)
+                  << std::endl;
         ZSTD_freeDStream(stream);
         opened_ = false;
         return false;
     }
 
-    ZSTD_inBuffer input;
-    input.src = compressed.data();
-    input.size = compressed.size();
-    input.pos = 0;
+    ZSTD_inBuffer input{
+        compressed.data(),
+        compressed.size(),
+        0
+    };
 
-    std::array<uint8_t, 1024 * 1024> buffer{};
+    std::vector<uint8_t> buffer(1024 * 1024);
 
-    while (input.pos < input.size)
+    while (true)
     {
-        ZSTD_outBuffer output;
-        output.dst = buffer.data();
-        output.size = buffer.size();
-        output.pos = 0;
+        ZSTD_outBuffer output{
+            buffer.data(),
+            buffer.size(),
+            0
+        };
 
         result = ZSTD_decompressStream(
             stream,
@@ -101,11 +100,9 @@ bool DBNReader::open()
 
         if (ZSTD_isError(result))
         {
-            std::cout
-                << "[DBNReader] zstd stream error: "
-                << ZSTD_getErrorName(result)
-                << std::endl;
-
+            std::cout << "[DBNReader] zstd stream error: "
+                      << ZSTD_getErrorName(result)
+                      << std::endl;
             ZSTD_freeDStream(stream);
             opened_ = false;
             return false;
@@ -116,15 +113,19 @@ bool DBNReader::open()
             buffer.begin(),
             buffer.begin() + output.pos
         );
+
+        if (input.pos == input.size && result == 0)
+        {
+            break;
+        }
     }
 
     ZSTD_freeDStream(stream);
 
-    std::cout
-        << "[DBNReader] decompressed size: "
-        << decompressed_data_.size()
-        << " bytes"
-        << std::endl;
+    std::cout << "[DBNReader] decompressed size: "
+              << decompressed_data_.size()
+              << " bytes"
+              << std::endl;
 
     opened_ = true;
     return true;
