@@ -20,16 +20,27 @@ bool PriceLevel::remove(uint64_t order_id)
     {
         if (it->order_id == order_id)
         {
-            if (volume_ >= it->size)
-            {
-                volume_ -= it->size;
-            }
-            else
-            {
-                volume_ = 0;
-            }
-
+            volume_ -= it->size;
             orders_.erase(it);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool PriceLevel::modify(uint64_t order_id, uint32_t new_size)
+{
+    for (auto& order : orders_)
+    {
+        if (order.order_id == order_id)
+        {
+            if (new_size >= order.size)
+                volume_ += new_size - order.size;
+            else
+                volume_ -= order.size - new_size;
+
+            order.size = new_size;
             return true;
         }
     }
@@ -39,22 +50,12 @@ bool PriceLevel::remove(uint64_t order_id)
 
 Order* PriceLevel::front()
 {
-    if (orders_.empty())
-    {
-        return nullptr;
-    }
-
-    return &orders_.front();
+    return orders_.empty() ? nullptr : &orders_.front();
 }
 
 const Order* PriceLevel::front() const
 {
-    if (orders_.empty())
-    {
-        return nullptr;
-    }
-
-    return &orders_.front();
+    return orders_.empty() ? nullptr : &orders_.front();
 }
 
 int64_t PriceLevel::price() const
