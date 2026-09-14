@@ -1,9 +1,18 @@
 #include <gtest/gtest.h>
 
+#include <string>
+
+#include "trading/marketdata/DatabentoFeed.hpp"
 #include "trading/replay/ReplayEngine.hpp"
 
 namespace
 {
+
+std::string TestDBNPath()
+{
+    return std::string(PROJECT_ROOT) +
+           "/data/ESU6_2026-06-15_MBO.dbn.zst";
+}
 
 class MockFeed : public CMETradingSystem::MarketData::MarketDataFeed
 {
@@ -34,7 +43,6 @@ public:
 private:
     bool sent_{false};
 };
-
 
 class Replay100KMockFeed : public CMETradingSystem::MarketData::MarketDataFeed
 {
@@ -91,7 +99,6 @@ TEST(ReplayEngineTest, ReplayOneMarketEvent)
     EXPECT_TRUE(replay.finished());
 }
 
-
 TEST(ReplayEngineTest, Replay100KMarketEvents)
 {
     Replay100KMockFeed feed;
@@ -110,5 +117,36 @@ TEST(ReplayEngineTest, Replay100KMarketEvents)
     EXPECT_EQ(
         builder.book().order_count(),
         100000
+    );
+}
+
+TEST(ReplayEngineTest, ReplayRealESU6MBO100KEvents)
+{
+    CMETradingSystem::MarketData::DatabentoFeed feed(
+        TestDBNPath()
+    );
+
+    CMETradingSystem::Trading::OrderBook::OrderBookBuilder builder;
+
+    CMETradingSystem::Replay::ReplayEngine replay(
+        feed,
+        builder
+    );
+
+    size_t event_count = 0;
+
+    constexpr size_t TARGET_EVENTS = 100000;
+
+    while (event_count < TARGET_EVENTS && replay.step())
+    {
+        ++event_count;
+    }
+
+    EXPECT_EQ(event_count, TARGET_EVENTS);
+    EXPECT_FALSE(replay.finished());
+
+    EXPECT_GT(
+        builder.book().order_count(),
+        0
     );
 }
