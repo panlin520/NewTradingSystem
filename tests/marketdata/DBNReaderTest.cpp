@@ -11,7 +11,8 @@ using namespace CMETradingSystem::MarketData::Databento;
 
 static std::string TestDBNPath()
 {
-    return "data/ESU6_2026-06-15_MBO.dbn.zst";
+    return std::string(PROJECT_ROOT) +
+           "/data/ESU6_2026-06-15_MBO.dbn.zst";
 }
 
 
