@@ -12,8 +12,6 @@ target_include_directories(EventPipelineTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
-# EventPipelineTest is a standalone executable with its own main().
-# It is not a GoogleTest test suite.
 add_test(
     NAME EventPipelineTest
     COMMAND EventPipelineTest
@@ -57,6 +55,21 @@ target_include_directories(OrderBookBuilderTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
+add_executable(ReplayEngineTest
+    replay/ReplayEngineTest.cpp
+)
+
+target_link_libraries(ReplayEngineTest
+    PRIVATE
+    NewTradingSystemCore
+    GTest::gtest_main
+)
+
+target_include_directories(ReplayEngineTest
+    PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
+)
+
 enable_testing()
 include(GoogleTest)
 
@@ -67,5 +80,10 @@ gtest_discover_tests(
 
 gtest_discover_tests(
     OrderBookBuilderTest
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+gtest_discover_tests(
+    ReplayEngineTest
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
