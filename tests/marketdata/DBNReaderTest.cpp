@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <filesystem>
 #include <iostream>
 #include <string>
 
@@ -16,6 +17,18 @@ TEST(DBNReaderTest, OpenClose)
 
     const std::string path =
         "data/ESU6_2026-06-15_MBO.dbn.zst";
+
+    std::cout << "[PATH] "
+              << path
+              << std::endl;
+
+    std::cout << "[ABSOLUTE PATH] "
+              << std::filesystem::absolute(path).string()
+              << std::endl;
+
+    std::cout << "[EXISTS] "
+              << (std::filesystem::exists(path) ? "YES" : "NO")
+              << std::endl;
 
     DBNReader reader(path);
 
