@@ -1,5 +1,6 @@
 #include "trading/marketdata/databento/DBNReader.hpp"
 
+#include <array>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
@@ -53,49 +54,75 @@ bool DBNReader::open()
         return false;
     }
 
-    const unsigned long long decompressed_size =
-        ZSTD_getFrameContentSize(
-            compressed.data(),
-            compressed.size()
-        );
+    decompressed_data_.clear();
 
-    if (decompressed_size == ZSTD_CONTENTSIZE_ERROR)
+    ZSTD_DStream* stream = ZSTD_createDStream();
+
+    if (!stream)
     {
-        std::cout << "[DBNReader] invalid zstd frame" << std::endl;
+        std::cout << "[DBNReader] create zstd stream failed" << std::endl;
         opened_ = false;
         return false;
     }
 
-    if (decompressed_size == ZSTD_CONTENTSIZE_UNKNOWN)
-    {
-        std::cout << "[DBNReader] unknown zstd content size" << std::endl;
-        opened_ = false;
-        return false;
-    }
-
-    decompressed_data_.resize(static_cast<size_t>(decompressed_size));
-
-    const size_t result = ZSTD_decompress(
-        decompressed_data_.data(),
-        decompressed_data_.size(),
-        compressed.data(),
-        compressed.size()
-    );
+    size_t result = ZSTD_initDStream(stream);
 
     if (ZSTD_isError(result))
     {
         std::cout
-            << "[DBNReader] zstd error: "
+            << "[DBNReader] init zstd stream failed: "
             << ZSTD_getErrorName(result)
             << std::endl;
 
+        ZSTD_freeDStream(stream);
         opened_ = false;
         return false;
     }
 
+    ZSTD_inBuffer input;
+    input.src = compressed.data();
+    input.size = compressed.size();
+    input.pos = 0;
+
+    std::array<uint8_t, 1024 * 1024> buffer{};
+
+    while (input.pos < input.size)
+    {
+        ZSTD_outBuffer output;
+        output.dst = buffer.data();
+        output.size = buffer.size();
+        output.pos = 0;
+
+        result = ZSTD_decompressStream(
+            stream,
+            &output,
+            &input
+        );
+
+        if (ZSTD_isError(result))
+        {
+            std::cout
+                << "[DBNReader] zstd stream error: "
+                << ZSTD_getErrorName(result)
+                << std::endl;
+
+            ZSTD_freeDStream(stream);
+            opened_ = false;
+            return false;
+        }
+
+        decompressed_data_.insert(
+            decompressed_data_.end(),
+            buffer.begin(),
+            buffer.begin() + output.pos
+        );
+    }
+
+    ZSTD_freeDStream(stream);
+
     std::cout
         << "[DBNReader] decompressed size: "
-        << result
+        << decompressed_data_.size()
         << " bytes"
         << std::endl;
 
