@@ -27,8 +27,15 @@ list(REMOVE_ITEM CORE_SOURCES
 # Local third party libraries
 # ============================================================
 
+# Build only the zstd library required by DBNReader.
+# Disable bundled programs/tests/shared projects.
+set(ZSTD_BUILD_PROGRAMS OFF CACHE BOOL "" FORCE)
+set(ZSTD_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ZSTD_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+
 add_subdirectory(
     third_party/zstd/build/cmake
+    EXCLUDE_FROM_ALL
 )
 
 
