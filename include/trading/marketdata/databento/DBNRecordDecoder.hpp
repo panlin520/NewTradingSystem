@@ -10,6 +10,22 @@
 namespace CMETradingSystem::MarketData::Databento
 {
 
+// ============================================================
+// DBNRecordDecoder
+// ============================================================
+//
+// Decodes one complete Databento DBN record from binary bytes.
+//
+// Important contract:
+// - `data` points to byte 0 of the DBN RecordHeader.
+// - `size` is the complete record size in bytes.
+// - For MBO, `decode_mbo()` also receives the complete record,
+//   not only the payload after RecordHeader.
+//
+// This keeps all binary offsets relative to the official Databento
+// RecordHeader / MboMsg layout and avoids duplicate offset systems.
+// ============================================================
+
 class DBNRecordDecoder
 {
 public:
