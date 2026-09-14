@@ -41,6 +41,13 @@ FetchContent_Declare(
     GIT_TAG v1.5.6
 )
 
+# Build only zstd library required by DBNReader
+# Disable zstd tools/examples/tests to avoid CrossCompileExample build
+set(ZSTD_BUILD_PROGRAMS OFF CACHE BOOL "" FORCE)
+set(ZSTD_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(ZSTD_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(ZSTD_BUILD_CONTRIB OFF CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable(zstd)
 
 # GoogleTest dependency for unit tests
