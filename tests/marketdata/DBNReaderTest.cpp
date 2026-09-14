@@ -15,7 +15,7 @@ TEST(DBNReaderTest, OpenClose)
     std::cout << "[1/4] Creating DBNReader" << std::endl;
 
     const std::string path =
-        "data/ESU6_2026-06-15_MBO.dbn.zst";
+        "C:/NewTradingSystem/NewTradingSystem/data/ESU6_2026-06-15_MBO.dbn.zst";
 
     DBNReader reader(path);
 
