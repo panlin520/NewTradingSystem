@@ -13,7 +13,7 @@ TEST(DBNReaderTest, OpenClose)
 {
     std::cout << "[DBNReaderTest] START" << std::endl;
 
-    std::cout << "[1/4] Creating DBNReader" << std::endl;
+    std::cout << "[1/5] Creating DBNReader" << std::endl;
 
     const std::string path =
         "data/ESU6_2026-06-15_MBO.dbn.zst";
@@ -22,29 +22,47 @@ TEST(DBNReaderTest, OpenClose)
               << path
               << std::endl;
 
+    const auto absolute_path =
+        std::filesystem::absolute(path);
+
     std::cout << "[ABSOLUTE PATH] "
-              << std::filesystem::absolute(path).string()
+              << absolute_path.string()
               << std::endl;
 
+    bool exists =
+        std::filesystem::exists(path);
+
     std::cout << "[EXISTS] "
-              << (std::filesystem::exists(path) ? "YES" : "NO")
+              << (exists ? "YES" : "NO")
               << std::endl;
+
+    EXPECT_TRUE(exists);
+
+    if (exists)
+    {
+        std::cout << "[FILE SIZE] "
+                  << std::filesystem::file_size(path)
+                  << " bytes"
+                  << std::endl;
+    }
 
     DBNReader reader(path);
 
-    std::cout << "[2/4] Opening DBN file" << std::endl;
+    std::cout << "[2/5] Opening DBN file" << std::endl;
 
     bool opened = reader.open();
 
-    std::cout << "[3/4] Open result: "
+    std::cout << "[3/5] Open result: "
               << (opened ? "SUCCESS" : "FAILED")
               << std::endl;
 
     EXPECT_TRUE(opened);
 
-    std::cout << "[4/4] Checking reader state" << std::endl;
+    std::cout << "[4/5] Checking reader state" << std::endl;
 
     EXPECT_TRUE(reader.is_open());
+
+    std::cout << "[5/5] DBNReader validation finished" << std::endl;
 
     std::cout << "[DBNReaderTest] FINISHED" << std::endl;
 }
