@@ -1,5 +1,6 @@
 #include "trading/marketdata/databento/DBNReader.hpp"
 #include "trading/marketdata/databento/DBNRecordDecoder.hpp"
+#include "trading/marketdata/databento/DBNRecordHeader.hpp"
 
 #include <cstring>
 #include <filesystem>
@@ -40,10 +41,7 @@ bool DBNReader::open()
 
     std::vector<uint8_t> compressed(compressed_size);
 
-    file.read(
-        reinterpret_cast<char*>(compressed.data()),
-        compressed_size
-    );
+    file.read(reinterpret_cast<char*>(compressed.data()), compressed_size);
 
     decompressed_data_.clear();
 
@@ -80,11 +78,7 @@ bool DBNReader::open()
             0
         };
 
-        result = ZSTD_decompressStream(
-            stream,
-            &output,
-            &input
-        );
+        result = ZSTD_decompressStream(stream, &output, &input);
 
         if (ZSTD_isError(result))
         {
@@ -125,11 +119,7 @@ bool DBNReader::read_header()
         return false;
     }
 
-    std::memcpy(
-        &header_,
-        decompressed_data_.data(),
-        sizeof(DBNHeader)
-    );
+    std::memcpy(&header_, decompressed_data_.data(), sizeof(DBNHeader));
 
     current_offset_ = sizeof(DBNHeader);
 
@@ -138,25 +128,40 @@ bool DBNReader::read_header()
 
 bool DBNReader::next_record(DBNRecord& record)
 {
-    if (!opened_)
+    if (!opened_ || current_offset_ >= decompressed_data_.size())
     {
         return false;
     }
 
-    if (current_offset_ >= decompressed_data_.size())
+    const uint8_t* data = decompressed_data_.data() + current_offset_;
+    const size_t remaining = decompressed_data_.size() - current_offset_;
+
+    DBNRecordHeader record_header{};
+
+    if (remaining < sizeof(DBNRecordHeader))
+    {
+        return false;
+    }
+
+    std::memcpy(
+        &record_header,
+        data,
+        sizeof(DBNRecordHeader)
+    );
+
+    if (record_header.length == 0 || record_header.length > remaining)
     {
         return false;
     }
 
     DBNRecordDecoder decoder;
 
-    const uint8_t* data = decompressed_data_.data() + current_offset_;
-    const size_t remaining = decompressed_data_.size() - current_offset_;
-
-    if (!decoder.decode(data, remaining, record))
+    if (!decoder.decode(data, record_header.length, record)))
     {
         return false;
     }
+
+    current_offset_ += record_header.length;
 
     return true;
 }
