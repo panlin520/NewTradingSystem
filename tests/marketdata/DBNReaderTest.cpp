@@ -2,11 +2,14 @@
 
 #include <array>
 #include <bit>
+#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <iostream>
 #include <string>
 
+#include "trading/core/Event.hpp"
+#include "trading/marketdata/DatabentoFeed.hpp"
 #include "trading/marketdata/databento/DBNReader.hpp"
 #include "trading/marketdata/databento/DBNRecordDecoder.hpp"
 #include "trading/marketdata/databento/MBOSchema.hpp"
@@ -268,5 +271,93 @@ TEST(DBNReaderTest, ReadFirstMBORecord)
               << " size=" << record.size
               << " order_id=" << record.order_id
               << " sequence=" << record.sequence
+              << std::endl;
+}
+
+TEST(DatabentoFeedTest, ReplayFirst100000MBOEvents)
+{
+    CMETradingSystem::MarketData::DatabentoFeed feed(TestDBNPath());
+    CMETradingSystem::MarketData::MarketDataEvent event{};
+
+    constexpr size_t REPLAY_EVENT_COUNT = 100000;
+
+    size_t add_count = 0;
+    size_t modify_count = 0;
+    size_t cancel_count = 0;
+    size_t reset_count = 0;
+    size_t trade_count = 0;
+    size_t fill_count = 0;
+    size_t none_count = 0;
+
+    for (size_t i = 0; i < REPLAY_EVENT_COUNT; ++i)
+    {
+        const auto status = feed.next(event);
+
+        ASSERT_EQ(status, CMETradingSystem::MarketData::FeedStatus::EVENT)
+            << "DatabentoFeed stopped before event " << i;
+
+        ASSERT_EQ(event.type, CMETradingSystem::Core::EventType::MARKET_DATA);
+        ASSERT_EQ(event.rtype, MBOSchema::MBO_RTYPE);
+        ASSERT_EQ(event.timestamp, event.ts_event);
+        ASSERT_GT(event.ts_event, 0ULL);
+        ASSERT_GT(event.ts_recv, 0ULL);
+        ASSERT_TRUE(IsValidMBOAction(event.action));
+        ASSERT_TRUE(IsValidMBOSide(event.side));
+
+        switch (event.action)
+        {
+        case 'A':
+            ++add_count;
+            break;
+
+        case 'M':
+            ++modify_count;
+            break;
+
+        case 'C':
+            ++cancel_count;
+            break;
+
+        case 'R':
+            ++reset_count;
+            break;
+
+        case 'T':
+            ++trade_count;
+            break;
+
+        case 'F':
+            ++fill_count;
+            break;
+
+        case 'N':
+            ++none_count;
+            break;
+
+        default:
+            FAIL() << "Unexpected MBO action at event " << i;
+        }
+    }
+
+    const size_t counted_events =
+        add_count +
+        modify_count +
+        cancel_count +
+        reset_count +
+        trade_count +
+        fill_count +
+        none_count;
+
+    EXPECT_EQ(counted_events, REPLAY_EVENT_COUNT);
+
+    std::cout << "[MBO REPLAY 100K]"
+              << " total=" << REPLAY_EVENT_COUNT
+              << " A=" << add_count
+              << " M=" << modify_count
+              << " C=" << cancel_count
+              << " R=" << reset_count
+              << " T=" << trade_count
+              << " F=" << fill_count
+              << " N=" << none_count
               << std::endl;
 }
