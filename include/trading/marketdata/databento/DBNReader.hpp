@@ -6,33 +6,19 @@
 
 namespace CMETradingSystem::MarketData::Databento {
 
+#pragma pack(push,1)
+
 struct DBNHeader
 {
     uint8_t version{0};
-    uint32_t schema{0};
-    uint32_t encoding{0};
-    uint32_t dataset{0};
+    uint8_t schema[3]{0,0,0};
+    uint8_t encoding[4]{0,0,0,0};
+    uint8_t dataset[4]{0,0,0,0};
 };
 
+#pragma pack(pop)
 
-// ============================================================
-// DBNReader
-// ============================================================
-//
-// Databento DBN / DBN.ZST 文件读取器。
-//
-// 当前阶段：
-// - 打开 Databento 压缩文件
-// - zstd 解压
-// - 准备 DBN Header 读取
-//
-// 不负责：
-// - MarketDataEvent 创建
-// - EventQueue
-// - Engine
-// - OrderBook
-//
-// ============================================================
+
 class DBNReader
 {
 public:
