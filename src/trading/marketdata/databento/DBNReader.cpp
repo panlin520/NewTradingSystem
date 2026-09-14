@@ -1,7 +1,10 @@
 #include "trading/marketdata/databento/DBNReader.hpp"
 
 #include <filesystem>
+#include <fstream>
 #include <utility>
+
+#include <zstd.h>
 
 namespace CMETradingSystem::MarketData::Databento {
 
@@ -22,24 +25,82 @@ bool DBNReader::open()
         return false;
     }
 
+    std::ifstream file(
+        file_path_,
+        std::ios::binary | std::ios::ate
+    );
+
+    if (!file)
+    {
+        opened_ = false;
+        return false;
+    }
+
+    const auto compressed_size = static_cast<size_t>(file.tellg());
+
+    file.seekg(0, std::ios::beg);
+
+    std::vector<uint8_t> compressed(compressed_size);
+
+    file.read(
+        reinterpret_cast<char*>(compressed.data()),
+        compressed_size
+    );
+
+    if (!file)
+    {
+        opened_ = false;
+        return false;
+    }
+
+    const unsigned long long decompressed_size =
+        ZSTD_getFrameContentSize(
+            compressed.data(),
+            compressed.size()
+        );
+
+    if (decompressed_size == ZSTD_CONTENTSIZE_ERROR ||
+        decompressed_size == ZSTD_CONTENTSIZE_UNKNOWN)
+    {
+        opened_ = false;
+        return false;
+    }
+
+    decompressed_data_.resize(
+        static_cast<size_t>(decompressed_size)
+    );
+
+    const size_t result = ZSTD_decompress(
+        decompressed_data_.data(),
+        decompressed_data_.size(),
+        compressed.data(),
+        compressed.size()
+    );
+
+    if (ZSTD_isError(result))
+    {
+        opened_ = false;
+        return false;
+    }
+
     opened_ = true;
+
     return true;
 }
 
 
 bool DBNReader::read_header()
 {
-    // ============================================================
-    // Stage 2 placeholder.
-    //
-    // Real DBN binary header decoding will be implemented here.
-    // Current function only validates that the reader is open.
-    // ============================================================
-
-    if (!opened_)
+    if (!opened_ || decompressed_data_.size() < sizeof(DBNHeader))
     {
         return false;
     }
+
+    std::memcpy(
+        &header_,
+        decompressed_data_.data(),
+        sizeof(DBNHeader)
+    );
 
     return true;
 }
