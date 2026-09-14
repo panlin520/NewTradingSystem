@@ -7,20 +7,15 @@ namespace CMETradingSystem::MarketData::Databento
 {
 
 // ============================================================
-// Databento DBN Record
+// Internal Databento DBN record representation
 // ============================================================
 //
-// Intermediate representation between:
+// This is the normalized structure produced by DBNRecordDecoder
+// before the data is converted into MarketDataEvent.
 //
-// DBN binary data
-//        |
-//        v
-// DBNRecord
-//        |
-//        v
-// MarketDataEvent
-//
-// This structure follows Databento MBO fields.
+// Field types intentionally follow Databento's official MBO schema.
+// Symbol is kept separately because it is not embedded in each MBO
+// binary record; it is resolved from DBN symbology metadata/mappings.
 // ============================================================
 
 struct DBNRecord
@@ -38,13 +33,13 @@ struct DBNRecord
     int64_t price{0};
     uint32_t size{0};
 
-    uint16_t channel_id{0};
+    uint8_t channel_id{0};
     uint64_t order_id{0};
 
     uint8_t flags{0};
     int32_t ts_in_delta{0};
 
-    uint64_t sequence{0};
+    uint32_t sequence{0};
 
     std::string symbol;
 };
