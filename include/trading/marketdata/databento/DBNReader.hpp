@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "trading/marketdata/databento/DBNRecord.hpp"
+
 namespace CMETradingSystem::MarketData::Databento {
 
 #pragma pack(push,1)
@@ -31,6 +33,8 @@ public:
 
     [[nodiscard]] bool read_header();
 
+    [[nodiscard]] bool next_record(DBNRecord& record);
+
     [[nodiscard]] bool is_open() const noexcept;
 
     [[nodiscard]] const DBNHeader& header() const noexcept;
@@ -44,6 +48,8 @@ private:
     DBNHeader header_{};
 
     std::vector<uint8_t> decompressed_data_;
+
+    size_t current_offset_{0};
 };
 
 }
