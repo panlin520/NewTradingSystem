@@ -5,32 +5,31 @@
 
 namespace CMETradingSystem::MarketData::Databento {
 
+struct DBNHeader
+{
+    uint8_t version{0};
+    uint32_t schema{0};
+    uint32_t encoding{0};
+    uint32_t dataset{0};
+};
+
+
 // ============================================================
 // DBNReader
 // ============================================================
 //
 // Databento DBN / DBN.ZST 文件读取器。
 //
-// 职责：
-// - 打开 Databento 历史数据文件
-// - 按原始顺序读取 Record
-// - 提供给 DatabentoFeed 使用
+// 当前阶段：
+// - 打开 Databento 文件
+// - 验证文件存在
+// - 准备 DBN Header 读取接口
 //
 // 不负责：
 // - MarketDataEvent 创建
 // - EventQueue
 // - Engine
 // - OrderBook
-//
-// 数据流：
-//
-// ESU6_2026-06-15_MBO.dbn.zst
-//          |
-//          v
-//       DBNReader
-//          |
-//          v
-//   Databento Record
 //
 // ============================================================
 class DBNReader
@@ -43,14 +42,19 @@ public:
 
     [[nodiscard]] bool open();
 
+    [[nodiscard]] bool read_header();
+
     [[nodiscard]] bool is_open() const noexcept;
 
+    [[nodiscard]] const DBNHeader& header() const noexcept;
 
 private:
 
     std::string file_path_;
 
     bool opened_{false};
+
+    DBNHeader header_{};
 };
 
 }
