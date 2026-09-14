@@ -1,4 +1,5 @@
 #include "trading/marketdata/databento/DBNReader.hpp"
+#include "trading/marketdata/databento/DBNRecordDecoder.hpp"
 
 #include <cstring>
 #include <filesystem>
@@ -137,8 +138,6 @@ bool DBNReader::read_header()
 
 bool DBNReader::next_record(DBNRecord& record)
 {
-    // Record decoding will be implemented after DBN schema mapping.
-    // Current step only introduces the iterator interface.
     if (!opened_)
     {
         return false;
@@ -149,7 +148,17 @@ bool DBNReader::next_record(DBNRecord& record)
         return false;
     }
 
-    return false;
+    DBNRecordDecoder decoder;
+
+    const uint8_t* data = decompressed_data_.data() + current_offset_;
+    const size_t remaining = decompressed_data_.size() - current_offset_;
+
+    if (!decoder.decode(data, remaining, record))
+    {
+        return false;
+    }
+
+    return true;
 }
 
 bool DBNReader::is_open() const noexcept
