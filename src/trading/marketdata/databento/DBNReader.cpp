@@ -249,6 +249,13 @@ bool DBNReader::is_open() const noexcept
     return opened_;
 }
 
+bool DBNReader::at_end() const noexcept
+{
+    return opened_ &&
+           records_offset_ != 0 &&
+           current_offset_ >= decompressed_data_.size();
+}
+
 const DBNHeader& DBNReader::header() const noexcept
 {
     return header_;
