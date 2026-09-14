@@ -2,8 +2,10 @@
 #include "trading/marketdata/databento/DBNRecordHeader.hpp"
 #include "trading/marketdata/databento/MBOSchema.hpp"
 
+#include <bit>
 #include <cstddef>
 #include <cstdint>
+#include <utility>
 
 namespace CMETradingSystem::MarketData::Databento
 {
@@ -39,12 +41,12 @@ uint64_t read_u64_le(const uint8_t* data) noexcept
 
 int32_t read_i32_le(const uint8_t* data) noexcept
 {
-    return static_cast<int32_t>(read_u32_le(data));
+    return std::bit_cast<int32_t>(read_u32_le(data));
 }
 
 int64_t read_i64_le(const uint8_t* data) noexcept
 {
-    return static_cast<int64_t>(read_u64_le(data));
+    return std::bit_cast<int64_t>(read_u64_le(data));
 }
 
 }
