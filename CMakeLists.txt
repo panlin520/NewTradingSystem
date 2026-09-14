@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.25)
 
+# TEST COMMENT SYNC CHECK
+
 project(NewTradingSystem
     VERSION 1.0
     LANGUAGES CXX
