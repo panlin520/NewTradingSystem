@@ -23,6 +23,11 @@ list(REMOVE_ITEM CORE_SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
+# Local third party libraries
+add_subdirectory(
+    third_party/zstd/build/cmake
+)
+
 add_library(NewTradingSystemCore
     ${CORE_SOURCES}
 )
@@ -32,36 +37,22 @@ target_include_directories(NewTradingSystemCore
     ${PROJECT_SOURCE_DIR}/include
 )
 
-# zstd dependency for DBN compressed files (.dbn.zst)
-include(FetchContent)
+# Link local zstd library for DBN .dbn.zst decoding
 
-FetchContent_Declare(
-    zstd
-    GIT_REPOSITORY https://github.com/facebook/zstd.git
-    GIT_TAG v1.5.6
+target_link_libraries(NewTradingSystemCore
+    PRIVATE
+    libzstd_static
 )
 
-# Build only zstd library required by DBNReader
-# Disable zstd tools/examples/tests to avoid CrossCompileExample build
-set(ZSTD_BUILD_PROGRAMS OFF CACHE BOOL "" FORCE)
-set(ZSTD_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(ZSTD_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(ZSTD_BUILD_CONTRIB OFF CACHE BOOL "" FORCE)
-
-FetchContent_MakeAvailable(zstd)
-
 # GoogleTest dependency for unit tests
+include(FetchContent)
+
 FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
 )
 
 FetchContent_MakeAvailable(googletest)
-
-target_link_libraries(NewTradingSystemCore
-    PRIVATE
-    libzstd_static
-)
 
 enable_testing()
 
