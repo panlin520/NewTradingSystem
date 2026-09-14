@@ -30,13 +30,11 @@ bool DBNReader::open()
 
     if (!file)
     {
-        std::cout << "[DBNReader] cannot open file" << std::endl;
         opened_ = false;
         return false;
     }
 
     const auto compressed_size = static_cast<size_t>(file.tellg());
-
     file.seekg(0, std::ios::beg);
 
     std::vector<uint8_t> compressed(compressed_size);
@@ -46,20 +44,12 @@ bool DBNReader::open()
         compressed_size
     );
 
-    if (!file)
-    {
-        std::cout << "[DBNReader] file read failed" << std::endl;
-        opened_ = false;
-        return false;
-    }
-
     decompressed_data_.clear();
 
     ZSTD_DStream* stream = ZSTD_createDStream();
 
     if (!stream)
     {
-        std::cout << "[DBNReader] create zstd stream failed" << std::endl;
         opened_ = false;
         return false;
     }
@@ -68,9 +58,6 @@ bool DBNReader::open()
 
     if (ZSTD_isError(result))
     {
-        std::cout << "[DBNReader] init zstd stream failed: "
-                  << ZSTD_getErrorName(result)
-                  << std::endl;
         ZSTD_freeDStream(stream);
         opened_ = false;
         return false;
@@ -100,9 +87,6 @@ bool DBNReader::open()
 
         if (ZSTD_isError(result))
         {
-            std::cout << "[DBNReader] zstd stream error: "
-                      << ZSTD_getErrorName(result)
-                      << std::endl;
             ZSTD_freeDStream(stream);
             opened_ = false;
             return false;
@@ -122,12 +106,14 @@ bool DBNReader::open()
 
     ZSTD_freeDStream(stream);
 
+    current_offset_ = 0;
+    opened_ = true;
+
     std::cout << "[DBNReader] decompressed size: "
               << decompressed_data_.size()
               << " bytes"
               << std::endl;
 
-    opened_ = true;
     return true;
 }
 
@@ -144,7 +130,26 @@ bool DBNReader::read_header()
         sizeof(DBNHeader)
     );
 
+    current_offset_ = sizeof(DBNHeader);
+
     return true;
+}
+
+bool DBNReader::next_record(DBNRecord& record)
+{
+    // Record decoding will be implemented after DBN schema mapping.
+    // Current step only introduces the iterator interface.
+    if (!opened_)
+    {
+        return false;
+    }
+
+    if (current_offset_ >= decompressed_data_.size())
+    {
+        return false;
+    }
+
+    return false;
 }
 
 bool DBNReader::is_open() const noexcept
