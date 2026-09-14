@@ -32,13 +32,7 @@ target_include_directories(DBNReaderTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
-add_test(
-    NAME DBNReaderTest
-    COMMAND DBNReaderTest
-)
-
-set_tests_properties(
+gtest_discover_tests(
     DBNReaderTest
-    PROPERTIES
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
