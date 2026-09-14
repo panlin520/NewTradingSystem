@@ -32,15 +32,29 @@ target_include_directories(NewTradingSystemCore
     ${PROJECT_SOURCE_DIR}/include
 )
 
-# GoogleTest dependency for unit tests
+# zstd dependency for DBN compressed files (.dbn.zst)
 include(FetchContent)
 
+FetchContent_Declare(
+    zstd
+    GIT_REPOSITORY https://github.com/facebook/zstd.git
+    GIT_TAG v1.5.6
+)
+
+FetchContent_MakeAvailable(zstd)
+
+# GoogleTest dependency for unit tests
 FetchContent_Declare(
     googletest
     URL https://github.com/google/googletest/archive/refs/tags/v1.15.2.zip
 )
 
 FetchContent_MakeAvailable(googletest)
+
+target_link_libraries(NewTradingSystemCore
+    PRIVATE
+    libzstd_static
+)
 
 enable_testing()
 
