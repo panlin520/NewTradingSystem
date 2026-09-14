@@ -1,5 +1,6 @@
 #include "trading/marketdata/databento/DBNRecordDecoder.hpp"
 #include "trading/marketdata/databento/DBNRecordHeader.hpp"
+#include "trading/marketdata/databento/MBOSchema.hpp"
 
 #include <cstring>
 
@@ -47,6 +48,17 @@ bool DBNRecordDecoder::decode(
 
     record.rtype = header.rtype;
 
+    if (header.rtype == MBOSchema::MBO_RTYPE)
+    {
+        MBORecord mbo{};
+
+        return decode_mbo(
+            data + sizeof(DBNRecordHeader),
+            size - sizeof(DBNRecordHeader),
+            mbo
+        );
+    }
+
     return true;
 }
 
@@ -62,8 +74,12 @@ bool DBNRecordDecoder::decode_mbo(
         return false;
     }
 
-    // MBO schema decoding will be added after validating
-    // Databento rtype=160 binary layout.
+    // The payload parser is intentionally kept disabled until
+    // the Databento rtype=160 schema offsets are verified.
+    // This prevents silently decoding incorrect price/order_id data.
+
+    (void)record;
+
     return false;
 }
 
