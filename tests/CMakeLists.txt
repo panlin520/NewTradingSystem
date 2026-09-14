@@ -13,8 +13,13 @@ target_include_directories(EventPipelineTest
     ${PROJECT_SOURCE_DIR}/include
 )
 
-include(GoogleTest)
-gtest_discover_tests(EventPipelineTest)
+# EventPipelineTest is a standalone executable with its own main().
+# It is not a GoogleTest test suite, so do not use gtest_discover_tests().
+add_test(
+    NAME EventPipelineTest
+    COMMAND EventPipelineTest
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
 
 
 add_executable(DBNReaderTest
