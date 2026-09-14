@@ -3,6 +3,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <iostream>
 #include <utility>
 
 #include <zstd.h>
@@ -20,6 +21,7 @@ bool DBNReader::open()
 {
     if (!std::filesystem::exists(file_path_))
     {
+        std::cout << "[DBNReader] file not found: " << file_path_ << std::endl;
         opened_ = false;
         return false;
     }
@@ -28,6 +30,7 @@ bool DBNReader::open()
 
     if (!file)
     {
+        std::cout << "[DBNReader] cannot open file" << std::endl;
         opened_ = false;
         return false;
     }
@@ -45,6 +48,7 @@ bool DBNReader::open()
 
     if (!file)
     {
+        std::cout << "[DBNReader] file read failed" << std::endl;
         opened_ = false;
         return false;
     }
@@ -55,9 +59,16 @@ bool DBNReader::open()
             compressed.size()
         );
 
-    if (decompressed_size == ZSTD_CONTENTSIZE_ERROR ||
-        decompressed_size == ZSTD_CONTENTSIZE_UNKNOWN)
+    if (decompressed_size == ZSTD_CONTENTSIZE_ERROR)
     {
+        std::cout << "[DBNReader] invalid zstd frame" << std::endl;
+        opened_ = false;
+        return false;
+    }
+
+    if (decompressed_size == ZSTD_CONTENTSIZE_UNKNOWN)
+    {
+        std::cout << "[DBNReader] unknown zstd content size" << std::endl;
         opened_ = false;
         return false;
     }
@@ -73,9 +84,20 @@ bool DBNReader::open()
 
     if (ZSTD_isError(result))
     {
+        std::cout
+            << "[DBNReader] zstd error: "
+            << ZSTD_getErrorName(result)
+            << std::endl;
+
         opened_ = false;
         return false;
     }
+
+    std::cout
+        << "[DBNReader] decompressed size: "
+        << result
+        << " bytes"
+        << std::endl;
 
     opened_ = true;
     return true;
