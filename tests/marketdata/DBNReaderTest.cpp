@@ -14,10 +14,8 @@ TEST(DBNReaderTest, OpenClose)
 
     std::cout << "[1/4] Creating DBNReader" << std::endl;
 
-    // Relative path from CTest working directory:
-    // out/build/x64-Debug/tests -> project root -> data
     const std::string path =
-        "../../../../data/ESU6_2026-06-15_MBO.dbn.zst";
+        "data/ESU6_2026-06-15_MBO.dbn.zst";
 
     DBNReader reader(path);
 
