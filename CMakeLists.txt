@@ -23,26 +23,34 @@ list(REMOVE_ITEM CORE_SOURCES
     ${PROJECT_SOURCE_DIR}/src/main.cpp
 )
 
+# ============================================================
 # Local third party libraries
+# ============================================================
+
 add_subdirectory(
     third_party/zstd/build/cmake
 )
+
 
 add_library(NewTradingSystemCore
     ${CORE_SOURCES}
 )
 
+
 target_include_directories(NewTradingSystemCore
     PUBLIC
-    ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/third_party/zstd/lib
 )
+
 
 # Link local zstd library for DBN .dbn.zst decoding
 
 target_link_libraries(NewTradingSystemCore
     PRIVATE
-    libzstd_static
+        libzstd_static
 )
+
 
 # GoogleTest dependency for unit tests
 include(FetchContent)
@@ -58,11 +66,13 @@ enable_testing()
 
 add_subdirectory(tests)
 
+
 add_executable(CMETradingSystem
     src/main.cpp
 )
 
+
 target_link_libraries(CMETradingSystem
     PRIVATE
-    NewTradingSystemCore
+        NewTradingSystemCore
 )
