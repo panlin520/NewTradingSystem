@@ -42,11 +42,30 @@ target_compile_definitions(
     PROJECT_ROOT="${PROJECT_SOURCE_DIR}"
 )
 
-# Enable GoogleTest CMake integration for DBNReaderTest
+add_executable(OrderBookBuilderTest
+    orderbook/OrderBookBuilderTest.cpp
+)
+
+target_link_libraries(OrderBookBuilderTest
+    PRIVATE
+    NewTradingSystemCore
+    GTest::gtest_main
+)
+
+target_include_directories(OrderBookBuilderTest
+    PRIVATE
+    ${PROJECT_SOURCE_DIR}/include
+)
+
 enable_testing()
 include(GoogleTest)
 
 gtest_discover_tests(
     DBNReaderTest
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+)
+
+gtest_discover_tests(
+    OrderBookBuilderTest
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
 )
