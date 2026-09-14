@@ -9,28 +9,27 @@
 using namespace CMETradingSystem::MarketData::Databento;
 
 
+static std::string TestDBNPath()
+{
+    return "data/ESU6_2026-06-15_MBO.dbn.zst";
+}
+
+
 TEST(DBNReaderTest, OpenClose)
 {
     std::cout << "[DBNReaderTest] START" << std::endl;
 
-    std::cout << "[1/5] Creating DBNReader" << std::endl;
+    const std::string path = TestDBNPath();
 
-    const std::string path =
-        "data/ESU6_2026-06-15_MBO.dbn.zst";
+    std::cout << "[PATH] " << path << std::endl;
 
-    std::cout << "[PATH] "
-              << path
-              << std::endl;
-
-    const auto absolute_path =
-        std::filesystem::absolute(path);
+    const auto absolute_path = std::filesystem::absolute(path);
 
     std::cout << "[ABSOLUTE PATH] "
               << absolute_path.string()
               << std::endl;
 
-    bool exists =
-        std::filesystem::exists(path);
+    bool exists = std::filesystem::exists(path);
 
     std::cout << "[EXISTS] "
               << (exists ? "YES" : "NO")
@@ -48,21 +47,36 @@ TEST(DBNReaderTest, OpenClose)
 
     DBNReader reader(path);
 
-    std::cout << "[2/5] Opening DBN file" << std::endl;
-
-    bool opened = reader.open();
-
-    std::cout << "[3/5] Open result: "
-              << (opened ? "SUCCESS" : "FAILED")
-              << std::endl;
-
-    EXPECT_TRUE(opened);
-
-    std::cout << "[4/5] Checking reader state" << std::endl;
-
+    EXPECT_TRUE(reader.open());
     EXPECT_TRUE(reader.is_open());
 
-    std::cout << "[5/5] DBNReader validation finished" << std::endl;
+    std::cout << "[DBNReaderTest] OpenClose FINISHED" << std::endl;
+}
 
-    std::cout << "[DBNReaderTest] FINISHED" << std::endl;
+
+TEST(DBNReaderTest, ReadHeader)
+{
+    std::cout << "[DBNReaderTest] ReadHeader START" << std::endl;
+
+    DBNReader reader(TestDBNPath());
+
+    ASSERT_TRUE(reader.open());
+
+    std::cout << "[1/3] Reader opened" << std::endl;
+
+    bool result = reader.read_header();
+
+    std::cout << "[2/3] Header read result: "
+              << (result ? "SUCCESS" : "FAILED")
+              << std::endl;
+
+    EXPECT_TRUE(result);
+
+    const auto& header = reader.header();
+
+    std::cout << "[3/3] Header version: "
+              << static_cast<int>(header.version)
+              << std::endl;
+
+    std::cout << "[DBNReaderTest] ReadHeader FINISHED" << std::endl;
 }
