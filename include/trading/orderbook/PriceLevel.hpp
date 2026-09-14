@@ -7,22 +7,6 @@
 namespace CMETradingSystem::Trading::OrderBook
 {
 
-// ============================================================
-// L3 Price Level
-// ============================================================
-//
-// Maintains orders at the same price.
-//
-// CME MBO priority rule:
-// same price -> FIFO by arrival sequence.
-//
-// Responsibilities:
-// - store order queue
-// - maintain aggregated volume
-// - remove orders by order_id
-//
-// ============================================================
-
 class PriceLevel
 {
 public:
@@ -31,6 +15,8 @@ public:
     void add(Order order);
 
     bool remove(uint64_t order_id);
+
+    bool modify(uint64_t order_id, uint32_t new_size);
 
     Order* front();
 
