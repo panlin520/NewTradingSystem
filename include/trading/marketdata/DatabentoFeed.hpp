@@ -1,6 +1,7 @@
 #pragma once
 
 #include "trading/marketdata/MarketDataFeed.hpp"
+#include "trading/marketdata/databento/DBNReader.hpp"
 
 #include <string>
 
@@ -10,20 +11,24 @@ namespace CMETradingSystem::MarketData {
 // DatabentoFeed
 // ============================================================
 //
-// CME MDP 3.0 MBO 数据源实现。
+// Databento historical CME MBO feed implementation.
 //
-// 当前阶段：
-// - 建立 Databento 专用 Feed 类型
-// - 保持与 MarketDataFeed 统一接口
+// Responsibility:
+// - Open a .dbn.zst file through Databento::DBNReader.
+// - Read records in their original DBN order.
+// - Convert MBO DBNRecord values into the unified MarketDataEvent.
+// - Report EVENT / END_OF_STREAM / ERROR through MarketDataFeed.
 //
-// 后续阶段：
-// - DBN / DBN.ZST 解码
-// - MBO Record 转换为 MarketDataEvent
-//
-// 不负责：
-// - OrderBook 重建
+// Not responsible for:
+// - Replay speed / pause / seek control
+// - OrderBook reconstruction
+// - Feature calculation
 // - Strategy
+// - Risk
 // - Execution
+//
+// Replay control belongs to the later Replay Engine. This class only
+// provides the deterministic historical event stream required by it.
 // ============================================================
 class DatabentoFeed final : public MarketDataFeed
 {
@@ -37,7 +42,15 @@ public:
 
 private:
 
-    std::string file_path_;
+    [[nodiscard]] bool initialize();
+
+    Databento::DBNReader reader_;
+
+    bool initialized_{false};
+
+    bool end_of_stream_{false};
+
+    bool failed_{false};
 };
 
 }
