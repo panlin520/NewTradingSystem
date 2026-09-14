@@ -54,6 +54,8 @@ public:
 
     [[nodiscard]] bool is_open() const noexcept;
 
+    [[nodiscard]] bool at_end() const noexcept;
+
     [[nodiscard]] const DBNHeader& header() const noexcept;
 
     // Byte offset of the first DBN record after the metadata block.
